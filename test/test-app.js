@@ -10,7 +10,9 @@ describe( 'generator-ho-conformance-task:app', function() {
                 skipInstall: true
             })
             .withPrompts({
-                someOption: true
+                taskName: 'testTask',
+                authorName: 'testUser',
+                userName: 'testuser'
             })
             .on( 'end', done )
     });

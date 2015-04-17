@@ -3,11 +3,21 @@ var yeoman = require( 'yeoman-generator' )
 var chalk = require( 'chalk' )
 var yosay = require( 'yosay' )
 var osenv = require( 'osenv' )
+var hogan = require( 'hogan.js' )
+
 
 module.exports = yeoman.generators.Base.extend({
 
     initializing: function() {
         this.pkg = require( '../package.json' )
+    },
+
+    /**
+     * Punts everything through hogan compilation
+     */
+    _copy: function( from, to ) {
+        var tmpl = hogan.compile( this.fs.read( from ) )
+        this.fs.write( to, tmpl.render( this.props ) )
     },
 
     prompting: function() {
@@ -24,6 +34,9 @@ module.exports = yeoman.generators.Base.extend({
             validate: function( str ) {
                 return !/\s/.test( str )
             }
+        }, {
+            name: 'taskDescription',
+            message: 'What is the description of your task?'
         }, {
             name: 'authorName',
             message: 'What is the author name?',
@@ -42,7 +55,7 @@ module.exports = yeoman.generators.Base.extend({
     writing: {
 
         app: function() {
-            this.fs.copy( this.templatePath( '_package.json' ), this.destinationPath( 'package.json') )
+            this._copy( this.templatePath( '_package.json' ), this.destinationPath( 'package.json') )
         },
 
         projectFiles: function() {

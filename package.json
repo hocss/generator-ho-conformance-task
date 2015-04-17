@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "chalk": "^1.0.0",
+    "hogan.js": "^3.0.2",
     "osenv": "^0.1.0",
     "yeoman-generator": "^0.19.0",
     "yosay": "^1.0.2"
