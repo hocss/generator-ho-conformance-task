@@ -1,4 +1,5 @@
 
+var fs = require( 'fs' )
 var yeoman = require( 'yeoman-generator' )
 var chalk = require( 'chalk' )
 var yosay = require( 'yosay' )
@@ -16,8 +17,30 @@ module.exports = yeoman.generators.Base.extend({
      * Punts everything through hogan compilation
      */
     _copy: function( from, to ) {
+        // Convert first param from object and populate from and to
+        if ( typeof from === 'object' ) {
+            var tmp = from
+            from = tmp.from
+            to = tmp.to
+        }
+
+        // If there is still no to param then assume filename remains unchanged
+        if ( !to ) {
+            var filepath = from
+            from = this.templatePath( filepath )
+            to = this.destinationPath( filepath )
+        }
+
         var tmpl = hogan.compile( this.fs.read( from ) )
         this.fs.write( to, tmpl.render( this.props ) )
+    },
+
+    // Renames files and appends yeoman paths
+    _rename: function( from, to ) {
+        return {
+            from: this.templatePath( from ),
+            to: this.destinationPath( to )
+        }
     },
 
     prompting: function() {
@@ -55,16 +78,19 @@ module.exports = yeoman.generators.Base.extend({
     writing: {
 
         app: function() {
-            this._copy( this.templatePath( '_package.json' ), this.destinationPath( 'package.json') )
-        },
-
-        projectFiles: function() {
-            this.fs.copy( this.templatePath( 'jshintrc' ), this.destinationPath( '.jshintrc') )
+            // Copy over whole templates directory
+            fs.readdirSync( this.sourceRoot() )
+                .forEach( function( file ) {
+                    // no idea why this cant be given to forEach directly, but filepaths go funky
+                    this._copy( file )
+                }.bind( this ) )
         }
     },
 
     install: function() {
-        this.installDependencies()
+        this.installDependencies({
+            bower: false
+        })
     }
 
 })
