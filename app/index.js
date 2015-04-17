@@ -1,4 +1,4 @@
-
+var path = require( 'path' )
 var fs = require( 'fs' )
 var yeoman = require( 'yeoman-generator' )
 var chalk = require( 'chalk' )
@@ -43,6 +43,20 @@ module.exports = yeoman.generators.Base.extend({
         }
     },
 
+    // Copies all files in folder, will not recurse
+    // use _copyDir( '' ) to copy root template folder, yes, this is ugly
+    _copyDir: function( folder ) {
+        var pathname = path.join( this.sourceRoot(), folder )
+        fs.readdirSync( pathname )
+            .forEach( function( file ) {
+                if ( !fs.statSync( path.join( pathname, file ) ).isFile() ) {
+                    return
+                }
+
+                this._copy( path.join( folder, file ) )
+            }.bind( this ) )
+    },
+
     prompting: function() {
         var done = this.async()
 
@@ -71,19 +85,34 @@ module.exports = yeoman.generators.Base.extend({
         }], function( props ) {
             this.props = props
 
+            // Create taskName versions for templating
+            this.props._taskNamePascal = this.props.taskName
+                .replace( /ho-conformance-/, '' )
+                .split( '-' )
+                .map( function( str ) {
+                    // De-hyphenate
+                    return str.replace( /-/, '' )
+                })
+                .map( function( str ) {
+                    // capitalize
+                    return str.replace( /(^.)/, function( cap ) {
+                        return cap.toUpperCase()
+                    })
+                })
+                .join( '' )
+            this.props._taskNameCamel = this.props._taskNamePascal.replace( /(^.)/, function( cap ) { return cap.toLowerCase() } )
+            this.props._taskNameCapitalize = this.props.taskName.replace( /(^.)/, function( cap ) { return cap.toUpperCase() } )
+
             done()
         }.bind( this ) )
     },
 
     writing: {
-
         app: function() {
-            // Copy over whole templates directory
-            fs.readdirSync( this.sourceRoot() )
-                .forEach( function( file ) {
-                    // no idea why this cant be given to forEach directly, but filepaths go funky
-                    this._copy( file )
-                }.bind( this ) )
+            // Copy files in template root
+            this._copyDir( '' )
+            // Copy files in template/lib
+            this._copyDir( 'lib' )
         }
     },
 

@@ -8,10 +8,9 @@ npm i {{ taskName }}
 
 ```
 import conformance from 'ho-conformance'
-import {{ taskName.replace( /(^.)/, function( cap ) { return cap.toUpperCase() } ) }} from '{{ taskName }}'
+import {{ _taskNamePascal }} from '{{ taskName }}'
 
-let {{ taskName }} = new {{ taskName.replace( /(^.)/, function( cap ) { return cap.toUpperCase() } ) }}( opts )
+let {{ _taskNameCamel }} = new {{ _taskNamePascal }}( opts )
 
-
-conformance.register( new {{ taskName.replace( /(^.)/, function( cap ) { return cap.toUpperCase() } ) }}( opts ) )
+conformance.register( new {{ _taskNameCamel }}( opts ) )
 ```
