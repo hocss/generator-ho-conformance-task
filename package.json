@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Scaffolds a ho conformance task",
   "license": "ISC",
-  "main": "index.js",
+  "main": "app/index.js",
   "repository": "hocss/generator-ho-conformance-task",
   "author": {
     "name": "Matt Styles",
@@ -13,9 +13,6 @@
   "scripts": {
     "test": "mocha"
   },
-  "files": [
-    "app"
-  ],
   "keywords": [
     "yeoman-generator",
     "ho",
@@ -23,8 +20,9 @@
     "ho-conformance"
   ],
   "dependencies": {
-    "yeoman-generator": "^0.19.0",
     "chalk": "^1.0.0",
+    "osenv": "^0.1.0",
+    "yeoman-generator": "^0.19.0",
     "yosay": "^1.0.2"
   },
   "devDependencies": {

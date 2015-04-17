@@ -1,61 +1,57 @@
-'use strict';
-var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
+
+var yeoman = require( 'yeoman-generator' )
+var chalk = require( 'chalk' )
+var yosay = require( 'yosay' )
+var osenv = require( 'osenv' )
 
 module.exports = yeoman.generators.Base.extend({
-  initializing: function () {
-    this.pkg = require('../package.json');
-  },
 
-  prompting: function () {
-    var done = this.async();
-
-    // Have Yeoman greet the user.
-    this.log(yosay(
-      'Welcome to the extraordinary ' + chalk.red('GeneratorHoConformanceTask') + ' generator!'
-    ));
-
-    var prompts = [{
-      type: 'confirm',
-      name: 'someOption',
-      message: 'Would you like to enable this option?',
-      default: true
-    }];
-
-    this.prompt(prompts, function (props) {
-      this.props = props;
-      // To access props later use this.props.someOption;
-
-      done();
-    }.bind(this));
-  },
-
-  writing: {
-    app: function () {
-      this.fs.copy(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json')
-      );
-      this.fs.copy(
-        this.templatePath('_bower.json'),
-        this.destinationPath('bower.json')
-      );
+    initializing: function() {
+        this.pkg = require( '../package.json' )
     },
 
-    projectfiles: function () {
-      this.fs.copy(
-        this.templatePath('editorconfig'),
-        this.destinationPath('.editorconfig')
-      );
-      this.fs.copy(
-        this.templatePath('jshintrc'),
-        this.destinationPath('.jshintrc')
-      );
-    }
-  },
+    prompting: function() {
+        var done = this.async()
 
-  install: function () {
-    this.installDependencies();
-  }
-});
+        this.log( yosay(
+            'Preparing to scaffold a ' + chalk.cyan( 'Ho conformance task' ) + '\n' +
+            'I need to know a few things...'
+        ))
+
+        this.prompt( [{
+            name: 'taskName',
+            message: 'What is the name of your task?',
+            validate: function( str ) {
+                return !/\s/.test( str )
+            }
+        }, {
+            name: 'authorName',
+            message: 'What is the author name?',
+            default: osenv.user()
+        }, {
+            name: 'userName',
+            message: 'What is your github username?',
+            default: osenv.user().toLowerCase().replace( /\s/g, '' )
+        }], function( props ) {
+            this.props = props
+
+            done()
+        }.bind( this ) )
+    },
+
+    writing: {
+
+        app: function() {
+            this.fs.copy( this.templatePath( '_package.json' ), this.destinationPath( 'package.json') )
+        },
+
+        projectFiles: function() {
+            this.fs.copy( this.templatePath( 'jshintrc' ), this.destinationPath( '.jshintrc') )
+        }
+    },
+
+    install: function() {
+        this.installDependencies()
+    }
+
+})

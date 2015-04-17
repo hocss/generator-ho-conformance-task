@@ -1,9 +1,7 @@
-'use strict';
 
-var path = require( 'path' );
-var assert = require( 'yeoman-generator' ).assert;
-var helpers = require( 'yeoman-generator' ).test;
-
+var path = require( 'path' )
+var assert = require( 'yeoman-generator' ).assert
+var helpers = require( 'yeoman-generator' ).test
 
 describe( 'generator-ho-conformance-task:app', function() {
     before( function( done ) {
@@ -19,9 +17,7 @@ describe( 'generator-ho-conformance-task:app', function() {
 
     it( 'creates files', function() {
         assert.file([
-            'bower.json',
             'package.json',
-            '.editorconfig',
             '.jshintrc'
         ])
     })
