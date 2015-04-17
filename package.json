@@ -1,6 +1,6 @@
 {
   "name": "generator-ho-conformance-task",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Scaffolds a ho conformance task",
   "license": "ISC",
   "main": "app/index.js",
